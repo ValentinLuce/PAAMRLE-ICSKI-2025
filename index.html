@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Echo Mystérieux</title>
+</head>
+<body>
+<h1>Parle ici :</h1>
+<button id="startBtn">Commencer</button>
+<p id="output"></p>
+
+<script>
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const synth = window.speechSynthesis;
+
+if (!SpeechRecognition) {
+    alert("Ton navigateur ne supporte pas la reconnaissance vocale.");
+} else {
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'fr-FR';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    const startBtn = document.getElementById('startBtn');
+    const output = document.getElementById('output');
+
+    function subtleChange(text) {
+        // Changer légèrement des lettres ou remplacer des mots de façon aléatoire
+        return text.split(' ').map(word => {
+            if (Math.random() < 0.2) {
+                // inverser quelques lettres
+                return word.split('').sort(() => Math.random() - 0.5).join('');
+            } else if (Math.random() < 0.1) {
+                // remplacer par un mot similaire ou étrange
+                const words = ['chat', 'pomme', 'zigzag', 'flop', 'banane'];
+                return words[Math.floor(Math.random() * words.length)];
+            }
+            return word;
+        }).join(' ');
+    }
+
+    startBtn.addEventListener('click', () => {
+        recognition.start();
+    });
+
+    recognition.onresult = (event) => {
+        const text = event.results[0][0].transcript;
+        const newText = subtleChange(text);
+        output.textContent = newText;
+
+        const utter = new SpeechSynthesisUtterance(newText);
+        utter.lang = 'fr-FR';
+        synth.speak(utter);
+    };
+
+    recognition.onerror = (event) => {
+        console.error(event.error);
+    };
+}
+</script>
+</body>
+</html>
