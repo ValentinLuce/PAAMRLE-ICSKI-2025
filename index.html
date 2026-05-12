@@ -35,37 +35,34 @@ const exemplesQuestions = [
 ];
 
 const reponses = {
-    pourquoi: [
-        "parce que le beurre a fondu.",
-        "car l'escalier est en panne.",
-        "à cause du niveau d'humidité.",
-        "parce que le castor refuse."
-    ],
-    quand: [
-        "seulement le troisième mardi du mois.",
-        "quand le chat sera d'accord.",
-        "juste après la cuisson du riz.",
-        "jamais sans mon autorisation écrite."
-    ],
-    ou: [
-        "probablement sous le tapis du salon.",
-        "dans le tiroir à sauce samouraï.",
-        "exactement là où tu n'es pas.",
-        "au fond du micro-ondes."
-    ],
-    general: [
-        "uniquement avec des gants de boxe.",
-        "tout dépend de la météo en Lozère.",
-        "oui, mais sans les pépins.",
-        "c'est une question de plomberie.",
-        "seulement si tu portes un chapeau."
-    ]
+    pourquoi: ["parce que le beurre a fondu.", "car l'escalier est en panne.", "à cause du niveau d'humidité.", "parce que le castor refuse."],
+    quand: ["seulement le troisième mardi du mois.", "quand le chat sera d'accord.", "juste après la cuisson du riz.", "jamais sans mon autorisation écrite."],
+    ou: ["probablement sous le tapis du salon.", "dans le tiroir à sauce samouraï.", "exactement là où tu n'es pas.", "au fond du micro-ondes."],
+    general: ["uniquement avec des gants de boxe.", "tout dépend de la météo en Lozère.", "oui, mais sans les pépins.", "c'est une question de plomberie.", "seulement si tu portes un chapeau."]
 };
 
 const intros = ["Écoute, ", "En réalité, ", "Je dirais que ", "C'est simple : ", "La vérité, c'est que "];
 
-let lastQuestionIndex = -1;
-let lastResponse = "";
+let sacs = {
+    questions: [],
+    intros: [],
+    pourquoi: [],
+    quand: [],
+    ou: [],
+    general: []
+};
+
+function remplirSac(nomDuSac, sourceOriginale) {
+    sacs[nomDuSac] = [...sourceOriginale].sort(() => Math.random() - 0.5);
+}
+
+// Fonction pour piocher dans un sac
+function piocher(nomDuSac, sourceOriginale) {
+    if (sacs[nomDuSac].length === 0) {
+        remplirSac(nomDuSac, sourceOriginale);
+    }
+    return sacs[nomDuSac].pop();
+}
 
 if (!SpeechRecognition) {
     alert("Ton navigateur ne supporte pas la reconnaissance vocale.");
@@ -77,17 +74,10 @@ if (!SpeechRecognition) {
     const output = document.getElementById('output');
     const exampleSpan = document.getElementById('example');
 
-    // Modifié : On lance le changement dès le chargement de la page
     function updateExample() {
-        let rand;
-        do { 
-            rand = Math.floor(Math.random() * exemplesQuestions.length); 
-        } while (rand === lastQuestionIndex);
-        lastQuestionIndex = rand;
-        exampleSpan.textContent = `"${exemplesQuestions[rand]}"`;
+        exampleSpan.textContent = `"${piocher('questions', exemplesQuestions)}"`;
     }
 
-    // On initialise une question au hasard direct
     updateExample();
 
     startBtn.addEventListener('click', () => {
@@ -97,21 +87,16 @@ if (!SpeechRecognition) {
 
     recognition.onresult = (event) => {
         const question = event.results[0][0].transcript.toLowerCase();
-        let listeChoisie = reponses.general;
-
-        if (question.includes("pourquoi")) listeChoisie = reponses.pourquoi;
-        else if (question.includes("quand")) listeChoisie = reponses.quand;
-        else if (question.includes("où") || (question.includes("ou") && question.includes("est"))) listeChoisie = reponses.ou;
-
-        const intro = intros[Math.floor(Math.random() * intros.length)];
         
-        let nouvelleReponse;
-        do {
-            nouvelleReponse = listeChoisie[Math.floor(Math.random() * listeChoisie.length)];
-        } while (nouvelleReponse === lastResponse);
+        let type = 'general';
+        if (question.includes("pourquoi")) type = 'pourquoi';
+        else if (question.includes("quand")) type = 'quand';
+        else if (question.includes("où") || (question.includes("ou") && question.includes("est"))) type = 'ou';
+
+        const intro = piocher('intros', intros);
+        const reponse = piocher(type, reponses[type]);
         
-        lastResponse = nouvelleReponse;
-        const phraseFinale = intro + nouvelleReponse;
+        const phraseFinale = intro + reponse;
         output.textContent = phraseFinale;
 
         const utter = new SpeechSynthesisUtterance(phraseFinale);
@@ -122,7 +107,6 @@ if (!SpeechRecognition) {
         synth.cancel();
         synth.speak(utter);
         
-        // Change la question pour la suite
         updateExample();
     };
 
