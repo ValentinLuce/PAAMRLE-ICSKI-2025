@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <title>Echo Mystérieux</title>
 <style>
-  
-        background-color: #d1d1d1; 
+    #startBtn:active {
+        background-color: #d1d1d1;
     }
 </style>
 </head>
@@ -14,7 +14,7 @@
 <button id="startBtn">Commencer</button>
 
 <p id="hint" style="color: #666; font-size: 0.9em; margin-top: 10px;">
-    <i>Essaye de demander : <span id="example">"Est-ce qu'il va pleuvoir aujourd'hui ?"</span></i>
+    <i>Essaye de demander : <span id="example">"Pourquoi le bus est toujours en retard ?"</span></i>
 </p>
 
 <p id="output" style="font-weight: bold; margin-top: 20px;"></p>
@@ -29,40 +29,42 @@ const exemplesQuestions = [
     "Qu'est-ce qu'on mange ce soir ?",
     "Tu sais où j'ai mis mes clés ?",
     "C'est quand le week-end ?",
-    "Tu penses quoi de ma nouvelle coupe de cheveux ?",
     "Pourquoi le bus est toujours en retard ?"
 ];
 
-const reponsesAbsurdes = [
-    "seulement si le chat est d'accord.",
-    "parce que le beurre a fondu.",
-    "uniquement avec des gants de boxe.",
-    "tout dépend de la sauce samouraï.",
-    "jamais sans mon autorisation écrite.",
-    "c'est écrit sur le paquet de riz.",
-    "a cause du niveau d'humidité.",
-    "oui, mais sans les pépins.",
-    "non, car le castor refuse.",
-    "seulement le troisième mardi du mois.",
-    "c'est une question de plomberie.",
-    "probablement sous le tapis du salon.",
-    "il faut demander au micro-ondes.",
-    "seulement si tu portes un chapeau.",
-    "parce que l'escalier est en panne."
-];
+// Dictionnaires de réponses par type de question pour simuler une conversation
+const reponses = {
+    pourquoi: [
+        "parce que le beurre a fondu.",
+        "car l'escalier est en panne.",
+        "à cause du niveau d'humidité.",
+        "parce que le castor refuse."
+    ],
+    quand: [
+        "seulement le troisième mardi du mois.",
+        "quand le chat sera d'accord.",
+        "juste après la cuisson du riz.",
+        "jamais sans mon autorisation écrite."
+    ],
+    ou: [
+        "probablement sous le tapis du salon.",
+        "dans le tiroir à sauce samouraï.",
+        "exactement là où tu n'es pas.",
+        "au fond du micro-ondes."
+    ],
+    general: [
+        "uniquement avec des gants de boxe.",
+        "tout dépend de la météo en Lozère.",
+        "oui, mais sans les pépins.",
+        "c'est une question de plomberie.",
+        "seulement si tu portes un chapeau."
+    ]
+};
 
-const intros = [
-    "Écoute, ", 
-    "En réalité, ", 
-    "Je dirais que ", 
-    "Pour être franc, ", 
-    "C'est simple : ", 
-    "La vérité, c'est que "
-];
-
+const intros = ["Écoute, ", "En réalité, ", "Je dirais que ", "C'est simple : ", "La vérité, c'est que "];
 
 let lastQuestionIndex = -1;
-let lastResponseIndex = -1;
+let lastResponse = "";
 
 if (!SpeechRecognition) {
     alert("Ton navigateur ne supporte pas la reconnaissance vocale.");
@@ -76,11 +78,8 @@ if (!SpeechRecognition) {
 
     function updateExample() {
         let rand;
-      
-        do {
-            rand = Math.floor(Math.random() * exemplesQuestions.length);
-        } while (rand === lastQuestionIndex);
-        
+        do { rand = Math.floor(Math.random() * exemplesQuestions.length); } 
+        while (rand === lastQuestionIndex);
         lastQuestionIndex = rand;
         exampleSpan.textContent = `"${exemplesQuestions[rand]}"`;
     }
@@ -91,17 +90,23 @@ if (!SpeechRecognition) {
     });
 
     recognition.onresult = (event) => {
+        const question = event.results[0][0].transcript.toLowerCase();
+        let listeChoisie = reponses.general;
+
+        // Semblant de logique : on détecte le type de question
+        if (question.includes("pourquoi")) listeChoisie = reponses.pourquoi;
+        else if (question.includes("quand")) listeChoisie = reponses.quand;
+        else if (question.includes("où") || question.includes("ou est")) listeChoisie = reponses.ou;
+
         const intro = intros[Math.floor(Math.random() * intros.length)];
         
-        let randResp;
+        let nouvelleReponse;
         do {
-            randResp = Math.floor(Math.random() * reponsesAbsurdes.length);
-        } while (randResp === lastResponseIndex);
+            nouvelleReponse = listeChoisie[Math.floor(Math.random() * listeChoisie.length)];
+        } while (nouvelleReponse === lastResponse);
         
-        lastResponseIndex = randResp;
-        const reponse = reponsesAbsurdes[randResp];
-        
-        const phraseFinale = intro + reponse;
+        lastResponse = nouvelleReponse;
+        const phraseFinale = intro + nouvelleReponse;
         output.textContent = phraseFinale;
 
         const utter = new SpeechSynthesisUtterance(phraseFinale);
@@ -111,13 +116,10 @@ if (!SpeechRecognition) {
         
         synth.cancel();
         synth.speak(utter);
-        
         updateExample();
     };
 
-    recognition.onerror = () => {
-        output.textContent = "L'Oracle n'a pas entendu. Réessayez.";
-    };
+    recognition.onerror = () => { output.textContent = "L'Oracle n'a pas entendu. Réessayez."; };
 }
 </script>
 </body>
