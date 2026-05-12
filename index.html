@@ -61,6 +61,10 @@ const intros = [
     "La vérité, c'est que "
 ];
 
+// Variables pour mémoriser les derniers choix
+let lastQuestionIndex = -1;
+let lastResponseIndex = -1;
+
 if (!SpeechRecognition) {
     alert("Ton navigateur ne supporte pas la reconnaissance vocale.");
 } else {
@@ -72,7 +76,13 @@ if (!SpeechRecognition) {
     const exampleSpan = document.getElementById('example');
 
     function updateExample() {
-        const rand = Math.floor(Math.random() * exemplesQuestions.length);
+        let rand;
+        // Boucle pour s'assurer que la nouvelle question est différente de la précédente
+        do {
+            rand = Math.floor(Math.random() * exemplesQuestions.length);
+        } while (rand === lastQuestionIndex);
+        
+        lastQuestionIndex = rand;
         exampleSpan.textContent = `"${exemplesQuestions[rand]}"`;
     }
 
@@ -83,7 +93,15 @@ if (!SpeechRecognition) {
 
     recognition.onresult = (event) => {
         const intro = intros[Math.floor(Math.random() * intros.length)];
-        const reponse = reponsesAbsurdes[Math.floor(Math.random() * reponsesAbsurdes.length)];
+        
+        let randResp;
+        // Boucle pour s'assurer que la nouvelle réponse est différente de la précédente
+        do {
+            randResp = Math.floor(Math.random() * reponsesAbsurdes.length);
+        } while (randResp === lastResponseIndex);
+        
+        lastResponseIndex = randResp;
+        const reponse = reponsesAbsurdes[randResp];
         
         const phraseFinale = intro + reponse;
         output.textContent = phraseFinale;
