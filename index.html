@@ -1,62 +1,91 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Echo Mystérieux</title>
+    <meta charset="UTF-8">
+    <title>Echo Mystérieux</title>
 </head>
 <body>
-<h1>Parle ici :</h1>
-<button id="startBtn">Commencer</button>
-<p id="output"></p>
+    <h1>Parle ici :</h1>
+    <button id="startBtn">Commencer</button>
+    <p id="output"></p>
 
-<script>
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-const synth = window.speechSynthesis;
+    <script>
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const synth = window.speechSynthesis;
 
-if (!SpeechRecognition) {
-    alert("Ton navigateur ne supporte pas la reconnaissance vocale.");
-} else {
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'fr-FR';
-    recognition.continuous = false;
-    recognition.interimResults = false;
+    if (!SpeechRecognition) {
+        alert("Ton navigateur ne supporte pas la reconnaissance vocale.");
+    } else {
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'fr-FR';
+        recognition.continuous = false;
+        recognition.interimResults = false;
 
-    const startBtn = document.getElementById('startBtn');
-    const output = document.getElementById('output');
+        const startBtn = document.getElementById('startBtn');
+        const output = document.getElementById('output');
 
-    function subtleChange(text) {
-        // Changer légèrement des lettres ou remplacer des mots de façon aléatoire
-        return text.split(' ').map(word => {
-            if (Math.random() < 0.2) {
-                // inverser quelques lettres
-                return word.split('').sort(() => Math.random() - 0.5).join('');
-            } else if (Math.random() < 0.1) {
-                // remplacer par un mot similaire ou étrange
-                const words = ['chat', 'pomme', 'zigzag', 'flop', 'banane'];
-                return words[Math.floor(Math.random() * words.length)];
-            }
-            return word;
-        }).join(' ');
+        // Liste des réponses "boguées mais polies"
+        const reponsesAbsurdes = [
+            "Oui, mais seulement si on rajoute de la sauce samouraï sur les bords.",
+            "C'est possible, mais il faut d'abord demander l'autorisation à un castor.",
+            "D'accord, mais je garde mon chapeau, c'est non négociable.",
+            "Ça dépend, est-ce que le jambon est fumé ou cuit à l'étouffée ?",
+            "Ah, je n'avais pas vu les choses sous cet angle, surtout avec un tel niveau d'humidité.",
+            "C'est entendu, je lance immédiatement la décongélation des brocolis par mesure de sécurité.",
+            "Le règlement interdit formellement d'utiliser un escalator avec une flûte à bec.",
+            "Le gruyère râpé n'a pas la même saveur si on chante du rock en même temps.",
+            "Les éponges ne sont pas du tout de cet avis, et elles sont très têtues.",
+            "Je vais de ce pas repeindre l'intérieur de mon processeur en bleu turquoise.",
+            "La pression atmosphérique d'un pneu de vélo ne permet pas ce genre d'audace.",
+            "Un yaourt nature est officiellement considéré comme une forme de technologie avancée.",
+            "Il faut d'abord vérifier si la couleur orange est toujours compatible avec votre humeur.",
+            "Le chat refuse catégoriquement de rendre la télécommande avant samedi prochain.",
+            "Je dois d'abord finir de compter le nombre de grains de riz dans mon assiette imaginaire.",
+            "Entendu, mais je décline toute responsabilité en cas d'invasion de canards en plastique."
+        ];
+
+        // Intros pour simuler une conversation
+        const intros = [
+            "Écoutez... ", 
+            "C'est très simple : ", 
+            "Après analyse, je dirais que ", 
+            "Ah, c'est une question délicate, mais ", 
+            "Pour être tout à fait honnête, ", 
+            "Ma base de données est formelle : "
+        ];
+
+        startBtn.addEventListener('click', () => {
+            output.textContent = "Je vous écoute...";
+            recognition.start();
+        });
+
+        recognition.onresult = (event) => {
+            // On récupère la question (même si on ne s'en sert pas pour la réponse)
+            const text = event.results[0][0].transcript;
+            
+            // On pioche une intro et une réponse au hasard
+            const intro = intros[Math.floor(Math.random() * intros.length)];
+            const reponse = reponsesAbsurdes[Math.floor(Math.random() * reponsesAbsurdes.length)];
+            
+            const phraseFinale = intro + reponse;
+            
+            // Mise à jour de l'affichage (esthétique identique à ton projet)
+            output.textContent = phraseFinale;
+
+            // L'IA parle avec un ton un peu sérieux
+            const utter = new SpeechSynthesisUtterance(phraseFinale);
+            utter.lang = 'fr-FR';
+            utter.pitch = 0.9;
+            utter.rate = 0.9;
+            
+            synth.cancel(); // Arrête une éventuelle voix en cours
+            synth.speak(utter);
+        };
+
+        recognition.onerror = (event) => {
+            console.error(event.error);
+        };
     }
-
-    startBtn.addEventListener('click', () => {
-        recognition.start();
-    });
-
-    recognition.onresult = (event) => {
-        const text = event.results[0][0].transcript;
-        const newText = subtleChange(text);
-        output.textContent = newText;
-
-        const utter = new SpeechSynthesisUtterance(newText);
-        utter.lang = 'fr-FR';
-        synth.speak(utter);
-    };
-
-    recognition.onerror = (event) => {
-        console.error(event.error);
-    };
-}
-</script>
+    </script>
 </body>
 </html>
