@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <title>Echo Mystérieux</title>
 <style>
-    /* On garde le bouton tel quel, on ajoute juste le changement de couleur au clic */
-    #startBtn:active {
-        background-color: #d1d1d1; /* Devient gris quand on appuie */
+  
+        background-color: #d1d1d1; 
     }
 </style>
 </head>
@@ -61,7 +60,7 @@ const intros = [
     "La vérité, c'est que "
 ];
 
-// Variables pour mémoriser les derniers choix
+
 let lastQuestionIndex = -1;
 let lastResponseIndex = -1;
 
@@ -77,7 +76,7 @@ if (!SpeechRecognition) {
 
     function updateExample() {
         let rand;
-        // Boucle pour s'assurer que la nouvelle question est différente de la précédente
+      
         do {
             rand = Math.floor(Math.random() * exemplesQuestions.length);
         } while (rand === lastQuestionIndex);
@@ -95,7 +94,6 @@ if (!SpeechRecognition) {
         const intro = intros[Math.floor(Math.random() * intros.length)];
         
         let randResp;
-        // Boucle pour s'assurer que la nouvelle réponse est différente de la précédente
         do {
             randResp = Math.floor(Math.random() * reponsesAbsurdes.length);
         } while (randResp === lastResponseIndex);
