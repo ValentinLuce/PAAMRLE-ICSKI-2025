@@ -4,50 +4,21 @@
 <meta charset="UTF-8">
 <title>Echo Mystérieux</title>
 <style>
-    /* Styles pour rendre le bouton plus attractif */
-    #startBtn {
-        padding: 12px 25px;
-        font-size: 1.1em;
-        cursor: pointer;
-        border-radius: 8px;
-        border: 2px solid #333;
-        background-color: #fff;
-        color: #333;
-        font-weight: bold;
-        transition: all 0.2s ease; /* Animation fluide */
-        outline: none;
-    }
-
-    /* Quand on passe la souris dessus */
-    #startBtn:hover {
-        background-color: #f0f0f0;
-        transform: translateY(-2px); /* Petit saut vers le haut */
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    /* Quand on clique (l'effet que tu voulais) */
+    /* On garde le bouton tel quel, on ajoute juste le changement de couleur au clic */
     #startBtn:active {
-        background-color: #d1d1d1; /* Devient gris */
-        transform: translateY(1px); /* S'enfonce */
-        box-shadow: none;
-        border-color: #888;
+        background-color: #d1d1d1; /* Devient gris quand on appuie */
     }
-
-    /* Optionnel : style du texte pour que ce soit propre */
-    body { font-family: sans-serif; padding: 40px; line-height: 1.6; }
-    #output { color: #2c3e50; min-height: 1.5em; }
 </style>
 </head>
 <body>
 <h1>Parle ici :</h1>
-
 <button id="startBtn">Commencer</button>
 
-<p id="hint" style="color: #666; font-size: 0.9em; margin-top: 15px;">
+<p id="hint" style="color: #666; font-size: 0.9em; margin-top: 10px;">
     <i>Essaye de demander : <span id="example">"Est-ce que l'art va bien ?"</span></i>
 </p>
 
-<p id="output" style="font-weight: bold; margin-top: 25px; font-size: 1.2em;"></p>
+<p id="output" style="font-weight: bold; margin-top: 20px;"></p>
 
 <script>
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -132,7 +103,7 @@ if (!SpeechRecognition) {
     };
 
     recognition.onerror = () => {
-        output.textContent = "L'Oracle est un peu sourd. Recommencez.";
+        output.textContent = "L'Oracle n'a pas entendu. Réessayez.";
     };
 }
 </script>
