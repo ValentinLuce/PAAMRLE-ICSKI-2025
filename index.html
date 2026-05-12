@@ -14,7 +14,7 @@
 <button id="startBtn">Commencer</button>
 
 <p id="hint" style="color: #666; font-size: 0.9em; margin-top: 10px;">
-    <i>Essaye de demander : <span id="example">"Pourquoi le bus est toujours en retard ?"</span></i>
+    <i>Essaye de demander : <span id="example">...</span></i>
 </p>
 
 <p id="output" style="font-weight: bold; margin-top: 20px;"></p>
@@ -29,10 +29,11 @@ const exemplesQuestions = [
     "Qu'est-ce qu'on mange ce soir ?",
     "Tu sais où j'ai mis mes clés ?",
     "C'est quand le week-end ?",
-    "Pourquoi le bus est toujours en retard ?"
+    "Pourquoi le bus est toujours en retard ?",
+    "Tu penses quoi de ma coiffure ?",
+    "Où est passé le chat ?"
 ];
 
-// Dictionnaires de réponses par type de question pour simuler une conversation
 const reponses = {
     pourquoi: [
         "parce que le beurre a fondu.",
@@ -76,13 +77,18 @@ if (!SpeechRecognition) {
     const output = document.getElementById('output');
     const exampleSpan = document.getElementById('example');
 
+    // Modifié : On lance le changement dès le chargement de la page
     function updateExample() {
         let rand;
-        do { rand = Math.floor(Math.random() * exemplesQuestions.length); } 
-        while (rand === lastQuestionIndex);
+        do { 
+            rand = Math.floor(Math.random() * exemplesQuestions.length); 
+        } while (rand === lastQuestionIndex);
         lastQuestionIndex = rand;
         exampleSpan.textContent = `"${exemplesQuestions[rand]}"`;
     }
+
+    // On initialise une question au hasard direct
+    updateExample();
 
     startBtn.addEventListener('click', () => {
         output.textContent = "Je vous écoute...";
@@ -93,10 +99,9 @@ if (!SpeechRecognition) {
         const question = event.results[0][0].transcript.toLowerCase();
         let listeChoisie = reponses.general;
 
-        // Semblant de logique : on détecte le type de question
         if (question.includes("pourquoi")) listeChoisie = reponses.pourquoi;
         else if (question.includes("quand")) listeChoisie = reponses.quand;
-        else if (question.includes("où") || question.includes("ou est")) listeChoisie = reponses.ou;
+        else if (question.includes("où") || (question.includes("ou") && question.includes("est"))) listeChoisie = reponses.ou;
 
         const intro = intros[Math.floor(Math.random() * intros.length)];
         
@@ -116,10 +121,12 @@ if (!SpeechRecognition) {
         
         synth.cancel();
         synth.speak(utter);
+        
+        // Change la question pour la suite
         updateExample();
     };
 
-    recognition.onerror = () => { output.textContent = "L'Oracle n'a pas entendu. Réessayez."; };
+    recognition.onerror = () => { output.textContent = "Réessaye."; };
 }
 </script>
 </body>
