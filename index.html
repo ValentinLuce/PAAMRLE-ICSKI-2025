@@ -15,7 +15,7 @@
 <button id="startBtn">Commencer</button>
 
 <p id="hint" style="color: #666; font-size: 0.9em; margin-top: 10px;">
-    <i>Essaye de demander : <span id="example">"Est-ce que l'art va bien ?"</span></i>
+    <i>Essaye de demander : <span id="example">"Est-ce qu'il va pleuvoir aujourd'hui ?"</span></i>
 </p>
 
 <p id="output" style="font-weight: bold; margin-top: 20px;"></p>
@@ -25,7 +25,7 @@ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogni
 const synth = window.speechSynthesis;
 
 const exemplesQuestions = [
-  "Est-ce qu'il va pleuvoir aujourd'hui ?",
+    "Est-ce qu'il va pleuvoir aujourd'hui ?",
     "Tu as passé une bonne journée ?",
     "Qu'est-ce qu'on mange ce soir ?",
     "Tu sais où j'ai mis mes clés ?",
@@ -53,7 +53,7 @@ const reponsesAbsurdes = [
 ];
 
 const intros = [
-"Écoute, ", 
+    "Écoute, ", 
     "En réalité, ", 
     "Je dirais que ", 
     "Pour être franc, ", 
