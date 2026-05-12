@@ -3,29 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <title>Echo Mystérieux</title>
+<style>
+    /* Styles pour rendre le bouton plus attractif */
+    #startBtn {
+        padding: 12px 25px;
+        font-size: 1.1em;
+        cursor: pointer;
+        border-radius: 8px;
+        border: 2px solid #333;
+        background-color: #fff;
+        color: #333;
+        font-weight: bold;
+        transition: all 0.2s ease; /* Animation fluide */
+        outline: none;
+    }
+
+    /* Quand on passe la souris dessus */
+    #startBtn:hover {
+        background-color: #f0f0f0;
+        transform: translateY(-2px); /* Petit saut vers le haut */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Quand on clique (l'effet que tu voulais) */
+    #startBtn:active {
+        background-color: #d1d1d1; /* Devient gris */
+        transform: translateY(1px); /* S'enfonce */
+        box-shadow: none;
+        border-color: #888;
+    }
+
+    /* Optionnel : style du texte pour que ce soit propre */
+    body { font-family: sans-serif; padding: 40px; line-height: 1.6; }
+    #output { color: #2c3e50; min-height: 1.5em; }
+</style>
 </head>
 <body>
 <h1>Parle ici :</h1>
+
 <button id="startBtn">Commencer</button>
 
-<p id="hint" style="color: #666; font-size: 0.9em; margin-top: 10px;">
-    <i>Essaye de demander : <span id="example">"Est-ce que les nuages ont des vacances ?"</span></i>
+<p id="hint" style="color: #666; font-size: 0.9em; margin-top: 15px;">
+    <i>Essaye de demander : <span id="example">"Est-ce que l'art va bien ?"</span></i>
 </p>
 
-<p id="output" style="font-weight: bold; margin-top: 20px;"></p>
+<p id="output" style="font-weight: bold; margin-top: 25px; font-size: 1.2em;"></p>
 
 <script>
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const synth = window.speechSynthesis;
 
 const exemplesQuestions = [
-    "Est-ce que les nuages ont des vacances ?",
-    "Pourquoi le ciel ne tombe-t-il pas ?",
-    "Quel est le secret du bonheur ?",
-    "Où vont les chaussettes perdues ?",
-    "Est-ce que tu m'aimes ?",
-    "C'est quoi le sens de la vie ?",
-    "Pourquoi les chats ne parlent pas ?"
+    "Est-ce que l'art va bien ?",
+    "Pourquoi le chat me regarde comme ça ?",
+    "Faut-il mettre des chaussettes aux poissons ?",
+    "Est-ce que la lune est faite en polenta ?",
+    "Que penses-tu des grille-pains connectés ?",
+    "Est-ce que les arbres dorment la nuit ?",
+    "Le futur est-il disponible en version d'essai ?",
+    "Pourquoi le chiffre 7 est-il si suspect ?",
+    "Peut-on cuisiner avec de la lumière ?"
 ];
 
 const reponsesAbsurdes = [
@@ -43,7 +80,8 @@ const reponsesAbsurdes = [
     "Un yaourt nature est officiellement considéré comme une forme de technologie avancée.",
     "Il faut d'abord vérifier si la couleur orange est toujours compatible avec votre humeur.",
     "Le chat refuse catégoriquement de rendre la télécommande avant samedi prochain.",
-    "Je dois d'abord finir de compter le nombre de grains de riz dans mon assiette imaginaire."
+    "Je dois d'abord finir de compter le nombre de grains de riz dans mon assiette imaginaire.",
+    "Entendu, mais je décline toute responsabilité en cas d'invasion de canards en plastique."
 ];
 
 const intros = [
@@ -65,7 +103,6 @@ if (!SpeechRecognition) {
     const output = document.getElementById('output');
     const exampleSpan = document.getElementById('example');
 
-    // Change l'exemple au clic pour donner de nouvelles idées
     function updateExample() {
         const rand = Math.floor(Math.random() * exemplesQuestions.length);
         exampleSpan.textContent = `"${exemplesQuestions[rand]}"`;
@@ -86,17 +123,16 @@ if (!SpeechRecognition) {
         const utter = new SpeechSynthesisUtterance(phraseFinale);
         utter.lang = 'fr-FR';
         utter.pitch = 0.9;
-        utter.rate = 0.9;
+        utter.rate = 0.95;
         
         synth.cancel();
         synth.speak(utter);
         
-        // On change l'exemple pour la prochaine fois
         updateExample();
     };
 
     recognition.onerror = () => {
-        output.textContent = "L'Oracle n'a pas entendu. Réessayez.";
+        output.textContent = "L'Oracle est un peu sourd. Recommencez.";
     };
 }
 </script>
