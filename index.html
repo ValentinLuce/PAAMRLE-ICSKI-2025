@@ -25,43 +25,40 @@ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogni
 const synth = window.speechSynthesis;
 
 const exemplesQuestions = [
-    "Est-ce que l'art va bien ?",
-    "Pourquoi le chat me regarde comme ça ?",
-    "Faut-il mettre des chaussettes aux poissons ?",
-    "Est-ce que la lune est faite en polenta ?",
-    "Que penses-tu des grille-pains connectés ?",
-    "Est-ce que les arbres dorment la nuit ?",
-    "Le futur est-il disponible en version d'essai ?",
-    "Pourquoi le chiffre 7 est-il si suspect ?",
-    "Peut-on cuisiner avec de la lumière ?"
+  "Est-ce qu'il va pleuvoir aujourd'hui ?",
+    "Tu as passé une bonne journée ?",
+    "Qu'est-ce qu'on mange ce soir ?",
+    "Tu sais où j'ai mis mes clés ?",
+    "C'est quand le week-end ?",
+    "Tu penses quoi de ma nouvelle coupe de cheveux ?",
+    "Pourquoi le bus est toujours en retard ?"
 ];
 
 const reponsesAbsurdes = [
-    "Oui, mais seulement si on rajoute de la sauce samouraï sur les bords.",
-    "C'est possible, mais il faut d'abord demander l'autorisation à un castor.",
-    "D'accord, mais je garde mon chapeau, c'est non négociable.",
-    "Ça dépend, est-ce que le jambon est fumé ou cuit à l'étouffée ?",
-    "Ah, je n'avais pas vu les choses sous cet angle, surtout avec un tel niveau d'humidité.",
-    "C'est entendu, je lance immédiatement la décongélation des brocolis par mesure de sécurité.",
-    "Le règlement interdit formellement d'utiliser un escalator avec une flûte à bec.",
-    "Le gruyère râpé n'a pas la même saveur si on chante du rock en même temps.",
-    "Les éponges ne sont pas du tout de cet avis, et elles sont très têtues.",
-    "Je vais de ce pas repeindre l'intérieur de mon processeur en bleu turquoise.",
-    "La pression atmosphérique d'un pneu de vélo ne permet pas ce genre d'audace.",
-    "Un yaourt nature est officiellement considéré comme une forme de technologie avancée.",
-    "Il faut d'abord vérifier si la couleur orange est toujours compatible avec votre humeur.",
-    "Le chat refuse catégoriquement de rendre la télécommande avant samedi prochain.",
-    "Je dois d'abord finir de compter le nombre de grains de riz dans mon assiette imaginaire.",
-    "Entendu, mais je décline toute responsabilité en cas d'invasion de canards en plastique."
+    "Seulement si le chat est d'accord.",
+    "Parce que le beurre a fondu.",
+    "Uniquement avec des gants de boxe.",
+    "Tout dépend de la sauce samouraï.",
+    "Jamais sans mon autorisation écrite.",
+    "C'est écrit sur le paquet de riz.",
+    "À cause du niveau d'humidité.",
+    "Oui, mais sans les pépins.",
+    "Non, car le castor refuse.",
+    "Seulement le troisième mardi du mois.",
+    "C'est une question de plomberie.",
+    "Probablement sous le tapis du salon.",
+    "Il faut demander au micro-ondes.",
+    "Seulement si tu portes un chapeau.",
+    "Parce que l'escalier est en panne."
 ];
 
 const intros = [
-    "Écoutez... ", 
-    "C'est très simple : ", 
-    "Après analyse, je dirais que ", 
-    "Ah, c'est une question délicate, mais ", 
-    "Pour être tout à fait honnête, ", 
-    "Ma base de données est formelle : "
+"Écoute, ", 
+    "En réalité, ", 
+    "Je dirais que ", 
+    "Pour être franc, ", 
+    "C'est simple : ", 
+    "La vérité, c'est que "
 ];
 
 if (!SpeechRecognition) {
